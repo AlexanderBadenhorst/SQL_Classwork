@@ -8,7 +8,7 @@ COPY movies (id, movie, actor)
 FROM
     'C:\YourDirectory\imaginary_text_file.txt'
 WITH
-    (FORMAT csv, DELIMITER ':', HEADER);
+    (FORMAT CSV, DELIMITER ':', HEADER);
 
 --QUESTION 2
 -- Export the 20 counties with the most housing units to a CSV file
