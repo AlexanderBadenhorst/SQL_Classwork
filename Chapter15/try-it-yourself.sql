@@ -1,11 +1,4 @@
---------------------------------------------------------------
--- Chapter 15: Saving Time with Views, Functions, and Triggers
---------------------------------------------------------------
-
--- 1. Create a view that displays the number of New York City taxi trips per
--- hour. Use the taxi data in Chapter 11 and the query in Listing 11-8.
-
--- Answer:
+--question 1:
 
 CREATE VIEW nyc_taxi_trips_per_hour AS
     SELECT
@@ -17,10 +10,7 @@ CREATE VIEW nyc_taxi_trips_per_hour AS
 
 SELECT * FROM nyc_taxi_trips_per_hour;
 
--- 2. In Chapter 10, you learned how to calculate rates per thousand. Turn that
--- formula into a rates_per_thousand() function that takes three arguments
--- to calculate the result: observed_number, base_number, and decimal_places.
-
+--question 2
 -- Answer: This uses PL/pgSQL, but you could use a SQL function as well.
 
 CREATE OR REPLACE FUNCTION
@@ -40,14 +30,7 @@ $$ LANGUAGE plpgsql;
 
 SELECT rate_per_thousand(50, 11000, 2);
 
--- 3. In Chapter 9, you worked with the meat_poultry_egg_inspect table that
--- listed food processing facilities. Write a trigger that automatically adds an
--- inspection date each time you insert a new facility into the table. Use the
--- inspection_date column added in Listing 9-19, and set the date to be six
--- months from the current date. You should be able to describe the steps needed
--- to implement a trigger and how the steps relate to each other.
-
--- Answer:
+--question 3:
 -- a) Add the column
 
 ALTER TABLE meat_poultry_egg_inspect ADD COLUMN inspection_date date;
