@@ -13,6 +13,7 @@ SELECT
     date_part('epoch', '2019-12-01 18:37:12 EST'::timestamptz) AS "epoch";
 
 -----CHANGE IN FORMAT-------
+---ading timezone abbreviation is now irrelevant---
 SELECT
     date_part('year', TIMESTAMPTZ '2025-07-31 09:00:00+02') AS "Y",
     date_part('month', TIMESTAMPTZ '2025-07-31 09:00:00+02') AS "M",
@@ -22,6 +23,8 @@ SELECT
 -- Bonus: Using the SQL-standard extract() for similar datetime parsing:
 
 SELECT extract('year' from '2019-12-01 18:37:12 EST'::timestamptz) AS "year";
+--new format-
+SELECT extract('hour' from '2025-07-31 09:00:00+02'::timestamptz) AS "hour";
 
 -- Listing 11-2: Three functions for making datetimes from components
 
@@ -31,6 +34,7 @@ SELECT make_date(2018, 2, 22);
 SELECT make_time(18, 4, 30.3);
 -- make a timestamp with time zone
 SELECT make_timestamptz(2018, 2, 22, 18, 4, 30.3, 'Europe/Lisbon');
+SELECT make_timestamptz('2025', '7', '31', '09', '15', '30', '+02');
 
 -- Bonus: Retrieving the current date and time
 
