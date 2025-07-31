@@ -12,6 +12,13 @@ SELECT
     date_part('quarter', '2019-12-01 18:37:12 EST'::timestamptz) AS "quarter",
     date_part('epoch', '2019-12-01 18:37:12 EST'::timestamptz) AS "epoch";
 
+-----CHANGE IN FORMAT-------
+SELECT
+    date_part('year', TIMESTAMPTZ '2025-07-31 09:00:00+02') AS "Y",
+    date_part('month', TIMESTAMPTZ '2025-07-31 09:00:00+02') AS "M",
+    date_part('day', TIMESTAMPTZ '2025-07-31 09:00:00+02') AS "D",
+    date_part('hour', TIMESTAMPTZ '2025-07-31 09:00:00+02') AS "H";
+
 -- Bonus: Using the SQL-standard extract() for similar datetime parsing:
 
 SELECT extract('year' from '2019-12-01 18:37:12 EST'::timestamptz) AS "year";
