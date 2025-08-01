@@ -301,3 +301,116 @@ SELECT station_name, max_temperature_group, count(*)
 FROM temps_collapsed
 GROUP BY station_name, max_temperature_group
 ORDER BY station_name, count(*) DESC;
+
+
+
+--extra task--
+--brief--
+-- -I have started a business, and would like a data capture to show my employees with their names, birthdates, roles, role descriptions and role salaries.
+
+-- Here are the roles:
+
+-- Graphic Designer - Helps with video editing, photo editing and market advertisement designs - 35k ZAR
+-- Videographer - Helps with all digital media productions - 18k ZAR
+-- Social Marketer - Helps with social media strategies and social data - 26k ZAR
+-- Sales Rep - Helps promote and sign clients - 20k ZAR
+
+-- Here are my employees:
+
+-- Aragorn - 24/08/1994 - Sales Rep (22 sales)
+-- Gandalf - 11/05/1982 - Graphic Designer
+-- Frodo - 18/01/1990 - Videographer
+-- Legolas - 22/04/1998 - Social Marketer
+-- Gimli - 08/11/2000 - Sales Rep (10 sales)
+-- Samwise - 01/01/2001 - Sales Rep (9 sales)
+-- Pippin - 26/09/1999 - Sales Rep (18 sales)
+-- Merry - 07/08/2005 - Social Marketer
+
+-- With my sales reps, can you please update the salaries by 200 ZAR per every unit they sell over 10. Also, can you please separate all my employees older than 27 years old.
+
+--solution--
+-- roles table --
+CREATE TABLE roles1 (
+  role_id SERIAL PRIMARY KEY,
+  role_name TEXT UNIQUE,
+  description TEXT,
+  base_salary NUMERIC
+);
+
+INSERT INTO roles1 (role_name, description, base_salary)
+VALUES
+  ('Graphic Designer', 'Helps with video editing, photo editing and market advertisement designs', 35000),
+  ('Videographer', 'Helps with all digital media productions', 18000),
+  ('Social Marketer', 'Helps with social media strategies and social data', 26000),
+  ('Sales Rep', 'Helps promote and sign clients', 20000);
+  
+ SELECT * FROM roles1
+
+-- employees table --
+CREATE TABLE employees2 (
+  employee_id SERIAL PRIMARY KEY,
+  name TEXT,
+  birthdate DATE,
+  role_id INT REFERENCES roles1(role_id),
+  sales INT
+);
+
+INSERT INTO employees2 (name, birthdate, role_id, sales)
+VALUES
+  ('Aragorn', '1994-08-24', 4, 22),
+  ('Gandalf', '1982-05-11', 1, NULL),
+  ('Frodo', '1990-01-18', 2, NULL),
+  ('Legolas', '1998-04-22', 3, NULL),
+  ('Gimli', '2000-11-08', 4, 10),
+  ('Samwise', '2001-01-01', 4, 9),
+  ('Pippin', '1999-09-26', 4, 18),
+  ('Merry', '2005-08-07', 3, NULL);
+  
+ SELECT * FROM employees2
+ 
+-- Get name, birthdate, role, description, base salary, adjusted salary --
+SELECT
+  e.name,
+  e.birthdate,
+  r.role_name,
+  r.description,
+  r.base_salary,
+  CASE 
+    WHEN r.role_name = 'Sales Rep' AND e.sales > 10 THEN 
+      r.base_salary + ((e.sales - 10) * 200)
+    ELSE 
+      r.base_salary
+  END AS final_salary
+FROM employees2 e
+JOIN roles1 r ON e.role_id = r.role_id;
+
+
+-- Show Employees Older Than 27 --
+SELECT
+  e.name,
+  e.birthdate,
+  r.role_name,
+  r.base_salary
+FROM employees2 e
+JOIN roles1 r ON e.role_id = r.role_id
+WHERE AGE(e.birthdate) > INTERVAL '27 years';
+
+--combined--
+SELECT
+  e.name,
+  e.birthdate,
+  r.role_name,
+  r.description,
+  r.base_salary,
+  CASE 
+    WHEN r.role_name = 'Sales Rep' AND e.sales > 10 THEN 
+      r.base_salary + ((e.sales - 10) * 200)
+    ELSE 
+      r.base_salary
+  END AS final_salary,
+  CASE 
+    WHEN AGE(e.birthdate) > INTERVAL '27 years' THEN 'Yes'
+    ELSE 'No'
+  END AS over_27
+FROM employees2 e
+JOIN roles1 r ON e.role_id = r.role_id;
