@@ -310,3 +310,57 @@ VALUES
     ('North Station', '2019/8/9', 93, 74);
 
 SELECT * FROM temperature_test;
+
+
+--extra task--
+--creating users table and user log table--
+CREATE TABLE users1 (
+    user_id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_log (
+    log_id SERIAL PRIMARY KEY,
+    user_id INT,
+    log_message TEXT,
+    log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--creating function to log entry into user_log every time a new row is added to users1--
+CREATE OR REPLACE FUNCTION log_user_creation()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO user_log (user_id, log_message)
+    VALUES (NEW.user_id, 'New user created: ' || NEW.username);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+--creating a trigger which fires after a new row is inserted into users1 and call the function--
+CREATE TRIGGER trg_log_user_creation
+AFTER INSERT ON users1
+FOR EACH ROW
+EXECUTE FUNCTION log_user_creation();
+
+--1st set of dumy data--
+INSERT INTO users1 (username, email) VALUES
+('Alex', 'alex@mail.com'),
+('Ethan', 'ethan@mail.com');
+
+--table checks--
+SELECT * FROM user_log;
+SELECT * FROM users1;
+
+--tests--
+SELECT * FROM user_log;
+
+INSERT INTO users1 (username, email) VALUES
+('David', 'david@mail.com');
+
+INSERT INTO users1 (username, email) VALUES
+('Example', 'example@mail.com');
+
+INSERT INTO users1 (username, email) VALUES
+('Test1', 'test1@mail.com');
